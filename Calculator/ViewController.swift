@@ -13,6 +13,7 @@ class ViewController: UIViewController {
     var displayState: Numbers!
     var sign: Signs!
     
+
     @IBOutlet weak var displayLabel: UILabel!
     @IBOutlet weak var divideButton: UIButton!
     @IBOutlet weak var multiplyButton: UIButton!
@@ -22,28 +23,43 @@ class ViewController: UIViewController {
     @IBOutlet weak var cancelButton: UIButton!
     
     @IBAction func numberButtonTapped(_ sender: UIButton) {
+        if displayState.display.isEmpty {
+            reset()
+        }
         resetButtonColour()
         let number = sender.title(for: .normal)!
         displayState.displayString(number)
         displayLabel.text = displayState.display
         acButton.isHidden = true
         cancelButton.isHidden = false
+        
+        print("Number button tapped: one: \(displayState.storeNumber1), two: \(displayState.storeNumber2), three: \(displayState.storeNumber3)")
     }
     
     @IBAction func acButtonTapped(_ sender: UIButton) {
         reset()
+        print("A/C button tapped: one: \(displayState.storeNumber1), two: \(displayState.storeNumber2), three: \(displayState.storeNumber3)")
     }
     @IBAction func cancelButtonTapped(_ sender: UIButton) {
+        
         displayState.display = ""
         displayLabel.text = "0"
+        cancelButton.isHidden = true
+        acButton.isHidden = false
+        
+        print("cancel button tapped: one: \(displayState.storeNumber1), two: \(displayState.storeNumber2), three: \(displayState.storeNumber3)")
         
     }
     @IBAction func plusMinusButtonTapped(_ sender: UIButton) {
        displayState.changeSign(displayState.display)
         displayLabel.text = displayState.display
+        print("plus/minus button tapped: one: \(displayState.storeNumber1), two: \(displayState.storeNumber2), three: \(displayState.storeNumber3)")
     }
     @IBAction func percentButtonTapped(_ sender: UIButton) {
+        displayState.percent(displayState.storeNumber3)
+        displayLabel.text = displayState.display
         
+        print("percent button tapped: one: \(displayState.storeNumber1), two: \(displayState.storeNumber2), three: \(displayState.storeNumber3)")
     }
     @IBAction func divideButtonTapped(_ sender: UIButton) {
         sign = Signs.divide
@@ -70,9 +86,8 @@ class ViewController: UIViewController {
         signButtonColourChange(sign)
     }
     
-    
     @IBAction func equalsButtonTapped(_ sender: UIButton) {
-        whenEqualsSignPressed(sign)
+            whenEqualsSignPressed(sign)
     }
     
     
@@ -86,15 +101,33 @@ class ViewController: UIViewController {
         displayState = Numbers(display: "", storeNumber1: 0, storeNumber2: 0, storeNumber3: 0)
         displayLabel.text = "0"
         resetButtonColour()
+        //allButtons.   layer.cornerRadius = 2
+        
     }
     
     func signButtonTapped(_ sign: Signs) {
+        /*if displayState.storeNumber1 == 0.0 && displayState.storeNumber2 == 0.0 {
+            displayState.storeFirstNum(displayState.display)
+            displayState.display = ""
+        } else if displayState.storeNumber2 != 0.0 {
+            
+        }*/
+        if displayState.display.isEmpty {
+            
+        } else if displayState.storeNumber1 != 0.0 {
+            whenEqualsSignPressed(sign)
+        } else {
         displayState.storeFirstNum(displayState.display)
         displayState.display = ""
-        
+        }
+        print("Sign button tapped: one: \(displayState.storeNumber1), two: \(displayState.storeNumber2), three: \(displayState.storeNumber3)")
     }
 
     func whenEqualsSignPressed(_ sign: Signs) {
+        if displayState.display.isEmpty {
+            
+        } else {
+        
         displayState.storeSecondNum(displayState.display)
         
         switch sign {
@@ -112,6 +145,8 @@ class ViewController: UIViewController {
         displayLabel.text = displayState.display
         displayState.display = ""
         displayState.storeNumber3 = displayState.storeNumber1
+        }
+        print("Equals button tapped: one: \(displayState.storeNumber1), two: \(displayState.storeNumber2), three: \(displayState.storeNumber3)")
     }
     
     func resetButtonColour() {
